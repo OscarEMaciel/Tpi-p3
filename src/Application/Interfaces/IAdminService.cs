@@ -2,7 +2,7 @@
 using Domain.Entities;
 namespace Application.Interfaces;
 
-public interface IAdminService()
+public interface IAdminService
 {
     public List<Admin> GetAdmins();
     public Admin GetAdminById(int id);
