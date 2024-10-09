@@ -38,5 +38,4 @@ public class ClientService:IClientService
         var client = _clientRepository.GetbyId(id);
         _clientRepository.Delete(client);
     }
-
 }
