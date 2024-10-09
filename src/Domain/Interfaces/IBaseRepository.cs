@@ -14,7 +14,5 @@ public interface IBaseRepository<T> where T :class
     public void Update(int id, T entity);
 
     public void Delete(T entity);
-
-
 }
  
