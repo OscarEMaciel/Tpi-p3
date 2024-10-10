@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.Interfaces;
+using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
@@ -37,7 +39,7 @@ namespace Web.Controllers
         [HttpDelete]
 		public IActionResult DeleteClient(int id)
 		{
-			_clientService.DeleteClients(id);
+			_clientService.DeleteClient(id);
 			return Ok(); 
 		}
     }
