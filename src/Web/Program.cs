@@ -14,10 +14,12 @@ builder.Services.AddSwaggerGen();
 
 #region Services 
 builder.Services.AddScoped<IClientService,ClientService>();
+builder.Services.AddScoped<IAdminService,AdminService>();
 #endregion 
 
 #region Repositories
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 #endregion
 
 var app = builder.Build();
