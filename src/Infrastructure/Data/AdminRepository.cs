@@ -1,7 +1,6 @@
 ﻿using System;
 using Domain.Entities;
 using Domain.Interfaces;
-using Infrastructure.Data;
 
 namespace Infrastructure.Data;
 
