@@ -1,35 +1,43 @@
-using System;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data;
-
-public class BaseRepository<T>: IBaseRepository<T> where T : class
+namespace Infrastructure.Data
 {
-    private static List<T> _entities = new List<T>();
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
+    {
+        private readonly DbContext _context;
+        public BaseRepository(DbContext context)
+        {
+            _context = context;
+        }
 
-      public List<T>GetAll(){
+        public T Add(T entity)
+        {
+            _context.Set<T>().Add(entity);
+            _context.SaveChanges();
+            return entity;
+        }
+        public List<T> GetAll()
+        {
+            return _context.Set<T>().ToList();
+        }
 
-        return _entities;
+        public T? GetById<TId>(TId id)
+        {
+            return _context.Set<T>().Find(new object[] { id });
+        }
+
+        public void Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+            _context.SaveChanges();
+        }
+
+        public T Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+            _context.SaveChanges();
+            return entity;
+        }
     }
-
-    public T GetbyId(int id){
-
-        return _entities[id];
-    }
-
-    public void Add(T entity){
-        _entities.Add(entity);
-    }
-
-    public void Update(int id, T entity){
-
-     
-        _entities[id] = entity;
-    }
-
-    public void Delete(T entity){
-        _entities.Remove(entity);
-    }
-
-
 }

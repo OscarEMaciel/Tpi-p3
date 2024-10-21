@@ -1,18 +1,12 @@
 using System;
-
-namespace Domain.Interfaces;
-
-public interface IBaseRepository<T> where T :class
+namespace Domain.Interfaces
 {
-    private static List<T> _entities = new List<T>();
-
-      public List<T>GetAll();
-
-    public T GetbyId(int id);
-
-    public void Add(T entity);
-    public void Update(int id, T entity);
-
-    public void Delete(T entity);
+    public interface IBaseRepository<T> where T : class
+    {
+        T Add(T entity);
+        List<T> GetAll();
+        T? GetById<TId>(TId id);
+        void Delete(T entity);
+        T Update(T entity);
+    }
 }
- 
