@@ -13,14 +13,14 @@ namespace Application.Services
     {
         private readonly ITransactionDetailsRepository _transactionDetailsRepository;
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IProductRepository _productRepository;
+        private readonly IItemRepository _itemRepository;
 
         // Constructor que inyecta los repositorios necesarios
-        public TransactionDetailService(ITransactionDetailsRepository transactionDetailsRepository, ITransactionRepository transactionRepository, IProductRepository productRepository)
+        public TransactionDetailService(ITransactionDetailsRepository transactionDetailsRepository, ITransactionRepository transactionRepository, IItemRepository itemRepository)
         {
             _transactionDetailsRepository = transactionDetailsRepository;
             _transactionRepository = transactionRepository;
-            _productRepository = productRepository;
+            _itemRepository = itemRepository;
         }
 
         // Método para obtener todos los detalles de transacciones
@@ -42,28 +42,28 @@ namespace Application.Services
         public void CreateTransactionDetail(TransactionDetailCreateRequest transactionDetailCreateRequest)
         {
             var transaction = _transactionRepository.GetById(transactionDetailCreateRequest.TransactionId);
-            var product = _productRepository.GetById(transactionDetailCreateRequest.ProductId);
+            var item = _itemRepository.GetById(transactionDetailCreateRequest.ItemId);
             
-            // Verifica si el producto existe
-            if (product == null)
+            // Verifica si el item existe
+            if (item == null)
             {
-                throw new NotFoundException(nameof(Product), transactionDetailCreateRequest.ProductId);
+                throw new NotFoundException(nameof(Item), transactionDetailCreateRequest.ItemId);
             }
 
             // Verifica si hay stock disponible
-            if (product.StockAvailable < transactionDetailCreateRequest.Quantity)
+            if (item.StockAvailable < transactionDetailCreateRequest.Quantity)
             {
                 throw new InvalidOperationException("No hay suficiente stock disponible.");
             }
 
             // Resta la cantidad solicitada del stock
-            product.StockAvailable -= transactionDetailCreateRequest.Quantity;
+            item.StockAvailable -= transactionDetailCreateRequest.Quantity;
 
-            // Actualiza el producto en el repositorio
-            _productRepository.Update(product);
+            // Actualiza el item en el repositorio
+            _itemRepository.Update(item);
 
             // Crea un nuevo detalle de transacción
-            var transactionDetail = new TransactionDetail(transaction, product, transactionDetailCreateRequest.Quantity, transactionDetailCreateRequest.UnitPrice);
+            var transactionDetail = new TransactionDetail(transaction, item, transactionDetailCreateRequest.Quantity, transactionDetailCreateRequest.UnitPrice);
             _transactionDetailsRepository.Add(transactionDetail);
         }
 
@@ -73,13 +73,13 @@ namespace Application.Services
             var transactionDetail = _transactionDetailsRepository.GetById(id)
                 ?? throw new NotFoundException(nameof(TransactionDetail), id);
             var transaction = _transactionRepository.GetById(transactionDetailUpdateRequest.TransactionId);
-            var product = _productRepository.GetById(transactionDetailUpdateRequest.ProductId);
+            var item = _itemRepository.GetById(transactionDetailUpdateRequest.ItemId);
 
             // Actualiza los campos si no son nulos
             if (transactionDetailUpdateRequest.Quantity != null) transactionDetail.Quantity = transactionDetailUpdateRequest.Quantity;
             if (transactionDetailUpdateRequest.UnitPrice != null) transactionDetail.UnitPrice = transactionDetailUpdateRequest.UnitPrice;
 
-            transactionDetail.Product = product;
+            transactionDetail.Item = item;
             transactionDetail.Transaction = transaction;
 
             // Actualiza el detalle de transacción
